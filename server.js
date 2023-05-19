@@ -43,21 +43,6 @@ app.post("/api/movies", (req, res) =>
     });
 })
 
-
-// accept the route parameter that represents the _id
-// accept the  numeric query parameter / string
-app.get("/api/movies/:id", (req, res) => 
-{
-    const { id } = req.params.id;
-    db.getMovieById(id)
-    .then((movie) => {
-        res.json(movie);
-    })
-    .catch((err) => {
-        res.status(500).json({error : err});
-    });
-})
-
 // accept the query to return all the movies
 app.get("/api/movies", (req, res) => 
 {
@@ -71,16 +56,33 @@ app.get("/api/movies", (req, res) =>
     });
 })
 
+// accept the route parameter that represents the _id
+// accept the  numeric query parameter / string
+app.get('/api/movies/:id', (req, res) => 
+{
+    const id = req.params.id;
+    db.getMovieById(id)
+    .then((movie) => {
+        if (movie) 
+        res.json(movie);
+        else 
+        res.status(404).json({error: 'Movie not found'});
+    })
+    .catch((err) => {
+        res.status(500).json({error : err});
+    });
+})
+
 // accept the route parameter
 // use id to update the movie and return the message
-app.put("api/movies/:id", (req, res) => 
+app.put('api/movies/:id', (req, res) => 
 {
-    const { id } = req.params.id;
+    const id  = req.params.id;
     const updatedMovie = req.body;
     
     db.updateMovieById(updatedMovie,id)
     .then(() => {
-        res.json({message: `Movie ID: ${ id } has been updated successfully`});
+        res.json({message: 'Movie has been updated successfully'});
     })
     .catch((err) => {
         res.status(500).json({error : err});
@@ -89,12 +91,12 @@ app.put("api/movies/:id", (req, res) =>
 
 // accept the route parameter 
 // use the id value to delete the movie document from collection
-app.delete("api/movies/:id", (req, res) => 
+app.delete('api/movies/:id', (req, res) => 
 {
-    const { id } = req.params.id;
+    const id  = req.params.id;
     db.deleteMovieById(id)
     .then(() => {
-        res.json({message: `Movie ID: ${ id } has been deleted successfully`});
+        res.json({message: 'Movie has been deleted successfully'});
     })
     .catch((err) => {
         res.status(500).json({error : err});
@@ -114,3 +116,6 @@ db.initialize(process.env.MONGODB_CONN_STRING).then(()=>{
 }).catch((err)=>{
     console.log(err);
 });
+
+
+
