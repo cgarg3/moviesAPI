@@ -15,28 +15,17 @@ const cors = require('cors');
 const express = require('express');
 const app = express();
 const HTTP_PORT = process.env.PORT || 8080;
-
-// adding route
-app.use(cors());
-
-// using it to enable the code to read from a .env file
 require('dotenv').config();
-
-// to ensure server can parse the JSON provided in the request body
-app.use(express.json());
-
-// adding to require the newly created js file
 const MoviesDB = require("./modules/moviesDB.js");
-
-// creating a new db instance to work on the movies data
 const db = new MoviesDB();
+app.use(cors());
+app.use(express.json());
 
 // adding a single GET route which returns the JSON object
 app.get('/', (req, res) => 
 {
     res.json({message: 'API Listening'})
 })
-
 
 // add a new movie to the collection
 // return the object or message to the client
@@ -62,7 +51,7 @@ app.get("/api/movies/:id", (req, res) =>
     const { id } = req.params.id;
     db.getMovieById(id)
     .then((movie) => {
-        res.status(201).json(movie);
+        res.json(movie);
     })
     .catch((err) => {
         res.status(500).json({error : err});
@@ -75,7 +64,7 @@ app.get("/api/movies", (req, res) =>
     const { page, perPage, title} = req.query;
     db.getAllMovies(page, perPage, title)
     .then((movie) => {
-        res.status(201).json(movie);
+        res.json(movie);
     })
     .catch((err) => {
         res.status(500).json({error : err});
@@ -91,7 +80,7 @@ app.put("api/movies/:id", (req, res) =>
     
     db.updateMovieById(updatedMovie,id)
     .then(() => {
-        res.status(201).json({message: `Movie ID: ${id} has been updated successfully`});
+        res.json({message: `Movie ID: ${ id } has been updated successfully`});
     })
     .catch((err) => {
         res.status(500).json({error : err});
@@ -105,7 +94,7 @@ app.delete("api/movies/:id", (req, res) =>
     const { id } = req.params.id;
     db.deleteMovieById(id)
     .then(() => {
-        res.status(201).json({message: `Movie ID: ${id} has been deleted successfully`});
+        res.json({message: `Movie ID: ${ id } has been deleted successfully`});
     })
     .catch((err) => {
         res.status(500).json({error : err});
@@ -113,7 +102,7 @@ app.delete("api/movies/:id", (req, res) =>
 })
 
 app.use((req, res) => {
-    res.status(404).json({message: "Resource not found"});
+    res.status(204).json({message: "Resource not found"});
 });
 
 
