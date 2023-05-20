@@ -79,7 +79,7 @@ app.put('api/movies/:id', (req, res) =>
     
     db.updateMovieById(updatedMovie,id)
     .then(() => {
-        res.status(201).json({message: `Movie ID: ${id} has been updated successfully`});
+        res.status(201).json({message: 'Movie ID has been updated successfully'});
     })
     .catch((err) => {
         res.status(500).json({error : err});
@@ -93,7 +93,7 @@ app.delete('api/movies/:id', (req, res) =>
     const id  = req.params.id;
     db.deleteMovieById(id)
     .then(() => {
-        res.status(201).json({message: `Movie ID: ${id} has been deleted successfully`});
+        res.status(201).json({message: 'Movie has been deleted successfully'});
     })
     .catch((err) => {
         res.status(500).json({error : err});
