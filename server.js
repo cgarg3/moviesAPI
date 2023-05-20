@@ -49,7 +49,7 @@ app.get("/api/movies", (req, res) =>
     const { page, perPage, title} = req.query;
     db.getAllMovies(page, perPage, title)
     .then((movie) => {
-        res.json(movie);
+        res.status(201).json(movie);
     })
     .catch((err) => {
         res.status(500).json({error : err});
@@ -60,16 +60,13 @@ app.get("/api/movies", (req, res) =>
 // accept the  numeric query parameter / string
 app.get('/api/movies/:id', (req, res) => 
 {
-    const id = req.params.id;
+    const id = req.params;
     db.getMovieById(id)
     .then((movie) => {
-        if (movie) 
-        res.json(movie);
-        else 
-        res.status(404).json({error: 'Movie not found'});
+        res.status(201).json(movie);
     })
     .catch((err) => {
-        res.status(500).json({error : err});
+          res.status(500).json({ error: err });
     });
 })
 
@@ -77,12 +74,12 @@ app.get('/api/movies/:id', (req, res) =>
 // use id to update the movie and return the message
 app.put('api/movies/:id', (req, res) => 
 {
-    const id  = req.params.id;
+    const { id } = req.params;
     const updatedMovie = req.body;
     
     db.updateMovieById(updatedMovie,id)
     .then(() => {
-        res.json({message: 'Movie has been updated successfully'});
+        res.status(201).json({message: `Movie ID: ${id} has been updated successfully`});
     })
     .catch((err) => {
         res.status(500).json({error : err});
@@ -96,7 +93,7 @@ app.delete('api/movies/:id', (req, res) =>
     const id  = req.params.id;
     db.deleteMovieById(id)
     .then(() => {
-        res.json({message: 'Movie has been deleted successfully'});
+        res.status(201).json({message: `Movie ID: ${id} has been deleted successfully`});
     })
     .catch((err) => {
         res.status(500).json({error : err});
